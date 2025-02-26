@@ -1,0 +1,63 @@
+<odoo>
+  <record id="view_sale_order_form_inherit" model="ir.ui.view">
+    <field name="name">sale.order.form.inherit.production</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form" />
+    <field name="arch" type="xml">
+      <!-- Botón para pasar a producción -->
+      <xpath expr="//header" position="inside">
+        <field name="production_state" invisible="1" />
+        <button
+          name="action_production"
+          type="object"
+          string="Pasar a Producción"
+          class="btn btn-primary"
+          invisible="state != 'sale' or invoice_status == 'invoiced' or production_state!='without'"
+        />
+        <button
+          name="action_production_done"
+          type="object"
+          string="Producción Terminada"
+          class="btn btn-success"
+          invisible="production_state  != 'production'"
+        />
+      </xpath>
+      <xpath expr="//button[@id='create_invoice']" position="attributes">
+        <attribute name="invisible">
+          invoice_status != 'to invoice' or production_state == 'production'
+        </attribute>
+      </xpath>
+      <xpath expr="//div[@name='button_box']" position="after">
+        <widget
+          name="web_ribbon"
+          title="En Producción"
+          invisible="production_state!='production'"
+        />
+        <widget
+          name="web_ribbon"
+          title="Producción Terminada"
+          bg_color="bg-info"
+          invisible="production_state!='production_done'"
+        />
+      </xpath>
+    </field>
+  </record>
+  <record id="sale_order_view_tree_inherit_production" model="ir.ui.view">
+    <field name="name">sale.order.view.tree.inherit.production</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.sale_order_tree" />
+    <field name="arch" type="xml">
+      <!-- Agregar el campo production_state a la vista de análisis de ventas -->
+      <xpath expr="//tree" position="inside">
+        <field
+          name="production_state"
+          optional="hide"
+          widget="badge"
+          decoration-success="production_state=='production_done'"
+          decoration-primary="production_state=='production'"
+          decoration-info="production_state=='without'"
+        />
+      </xpath>
+    </field>
+  </record>
+</odoo>
