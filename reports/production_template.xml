@@ -80,7 +80,22 @@
                         </div>
                     </div>
                     <div class="col-4 d-flex justify-content-end">
-                      <div style="margin-bottom:0px;font-size: 0.8rem;">FECHA DE ENTREGA:<br/> <span t-field="doc.commitment_date"/></div>
+                        <table class="table table-sm table-borderless" style="font-size:0.8rem">
+                            <tbody>
+                                <tr>
+                                    <td class="text-center" t-attf-style="color:{{style.text_color}};font-weight: 700;">FECHA DE ENTREGA: </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center" t-attf-style="color:{{style.text_color}};"><span t-field="doc.commitment_date"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center" t-attf-style="color:{{style.text_color}};font-weight: 700;">Referencia del Cliente: </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center" t-attf-style="color:{{style.text_color}};"><span t-field="doc.client_order_ref"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 <!--Data-->
