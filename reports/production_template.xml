@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <template id="report_sale_order_production">
+      <t t-call="web.report_layout">
+        <t t-foreach="docs" t-as="doc">
+          <t t-set="style" t-value="doc.style or res_company.df_style"/>
+            <t t-if="doc and 'company_id' in doc">
+                <t t-set="company" t-value="doc.company_id"></t>
+            </t>
+            <t t-if="not doc or not 'company_id' in doc">
+                <t t-set="company" t-value="res_company"></t>
+            </t>
+            <div class="header">
+                <div class="">
+                    <div class="row align-items-center">
+                        <div class="col-6">
+                            <div>
+                                <span t-if="style.logo">
+                                    <img t-if="style.logo" t-att-src="image_data_uri(style.logo)"  alt="Logo"/>
+                                </span>
+                                <span t-if="not style.logo">
+                                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)"  alt="Logo"/>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-6 text-end">
+                            <div class="d-inline-block" t-attf-style="
+                                background-color: {{style.theme_color}};
+                                border-radius: 20px 0px 0px 20px;
+                                padding: 5px 10px;
+                                height: 40px;">
+                                <span style="
+                                    font-size:1rem;
+                                    font-weight: 700;">
+                                    <t t-if="doc.production_state not in ['witout']">ORDEN DE TRABAJO</t>
+                                    <t t-else="">ORDEN DE VENTA</t>
+                                </span>
+                            </div>
+                            <p style="
+                                    font-size:1rem;
+                                    font-weight: 700;" class="">
+                                    No. <t t-out="doc.name"/>
+                            </p>
+                            <p t-attf-style="
+                                color:{{style.text_color}}">
+                                <t t-out="doc.date_order.strftime('%d / %m / %Y')" />
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+            <div class="article page" t-attf-data-oe-model="sale.order" t-attf-data-oe-id="{{doc.id}}" t-attf-style="color:{{style.text_color}} !important;font-size:{{int(style.body_font)}}px !important;font-family:{{style.font_family}} !important;">
+                <div class="col-12" t-attf-style="white-space:pre-line;color:#{style.wm_color};left:#{style.leftpadding}mm; top:#{style.toppadding}mm;font-size:#{style.fontsize}px; opacity:#{style.opacity};z-index:-99; -webkit-transform:rotate(-#{style.rotate}deg);position:fixed;"><t t-esc="style.wm_eval(doc, time, user, res_company)"/></div>
+                <div  class="row row-cols-2 mb-4" t-attf-style="
+                    background-color: #e9eaec;
+                    padding: 10px 15px;
+                    border-radius: 15px;">
+                    <div class="col-8">
+                        <div>
+                            <t t-if="doc.partner_id.parent_id">
+                                <div style="margin-bottom:0px;text-transform: uppercase;font-size: 1rem;font-weight: 700;" t-field="doc.partner_id.parent_id"/>
+                                <div style="margin-bottom:0px;font-size: 0.8rem;">Contacto: <span t-field="doc.partner_id.name"/></div>
+                            </t>
+                            <t t-else="">
+                                <div t-field="doc.partner_id" style="margin-bottom:0px;text-transform: uppercase;font-size: 1rem;font-weight: 700;" t-options='{"widget": "contact", "fields":["name"],"no_marker": false}'/>
+                                <div style="margin-bottom:0px; font-size:0.8rem;">Contacto: <span t-field="doc.partner_id.custom_contact"/></div>
+                            </t>
+                            <div t-field="doc.partner_id" t-attf-style="margin-bottom:0px;color:{{style.text_color}};" t-options='{"widget": "contact", "fields":["phone","mobile"],"no_marker": false}'/>
+                            <div t-field="doc.partner_id" t-attf-style="margin-bottom:0px;color:{{style.text_color}};" t-options='{"widget": "contact", "fields":["email"],"no_marker": false}'/>
+                            <br/>
+                        <t t-if="doc.note">
+                          <div style="margin-bottom:0px;text-transform: uppercase;font-size: 1rem;font-weight: 700;">OBSERVACIONES:</div>
+                          <div style="margin-bottom:0px;text-transform: uppercase;font-size: 1rem;">
+                            <span t-field="doc.note"></span>
+                          </div>
+                        </t>
+                        </div>
+                    </div>
+                    <div class="col-4 d-flex justify-content-end">
+                      <div style="margin-bottom:0px;font-size: 0.8rem;">FECHA DE ENTREGA:<br/> <span t-field="doc.commitment_date"/></div>
+                    </div>
+                </div>
+                <!--Data-->
+                <t t-call="shokale_templates.shokale_order_lines"/>
+                <!--/Data-->
+            </div>
+            <!--End of PAGE-->
+          
+            <div class="footer">
+            <div class="container-fluid py-2">
+              <div class="row align-items-center">
+                <div class="col text-end">
+                    <div t-if="doc.user_id">
+                        <strong>Elaborada por: </strong>
+                        <strong t-field="doc.user_id"/><br/>
+                </div>
+                </div>
+              </div>
+              
+              <div class="row align-items-center bg-dark text-white py-2 ">
+                <div class="col-4 text-center">
+                  <i class="fa fa-phone"></i>
+                  <span> <t t-out="doc.company_id.partner_id.phone"/> / <t t-out="doc.company_id.partner_id.mobile"/></span>
+                </div>
+                <div class="col-4 text-center justify-content-center">
+                  <i class="fa fa-envelope"></i>
+                  <span > <t t-out="doc.company_id.partner_id.email"/> </span>
+                </div>
+                <div class="col-4 text-center justify-content-end">
+                  <i class="fa fa-globe me-2"></i>
+                  <span > <t t-out="doc.company_id.partner_id.website"/> </span>
+                </div>
+              </div>
+            </div>
+                <!-- <t t-call="shokale_templates.shokale_company_footer"/> -->
+            </div>
+
+        </t>
+      </t>
+    </template>
+  </data>
+</odoo>

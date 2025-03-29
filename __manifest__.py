@@ -8,10 +8,12 @@
     "author": "Juan D. Collado Vasquez",
     "website": "https://tagre.pe",
     "depends": [
-        "sale_management",
+        "sale_management","shokale_templates"
     ],
     "data": [
-        'views/sale_order_views.xml'
+        'views/sale_order_views.xml',
+        'reports/production_template.xml',
+        'reports/production_report.xml',
     ],
     "application": True,
     "installable": True,
